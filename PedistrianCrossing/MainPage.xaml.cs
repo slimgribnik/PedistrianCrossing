@@ -118,11 +118,9 @@ namespace PedistrianCrossing
 
         private void Button_ValueChanged(GpioPin sender, GpioPinValueChangedEventArgs e)
         {
-            this.Traffic_light[YELLOW].Write(GpioPinValue.High);          //////////////////
             // Pedestrian has pushed the button. Start timer for going red.
             if (e.Edge == GpioPinEdge.FallingEdge)
             {
-              this.Traffic_light[YELLOW].Write(GpioPinValue.Low); ///////////////////////////
               // Start the timer if and only if not in a cycle
                 if (this.secondsElapsed == 0)
                 {
