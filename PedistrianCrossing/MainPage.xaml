@@ -8,6 +8,13 @@
     mc:Ignorable="d">
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+            <TextBlock x:Name="title" Height="60" TextWrapping="NoWrap" Text="Pedistrian Crossing" FontSize="28" Foreground="Blue"
+                     Margin="10" HorizontalAlignment="Center"/>
 
+            <TextBlock x:Name="buttonStatus" Height="60" TextWrapping="NoWrap"
+                     Text="Status" FontSize="28" Foreground="Blue"
+                     Margin="10" HorizontalAlignment="Center"/>
+        </StackPanel>
     </Grid>
 </Page>

@@ -107,6 +107,7 @@
     <None Include="PedistrianCrossing_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Assets\PedistrianCrossingWiring.jpg" />
     <Content Include="Properties\Default.rd.xml" />
     <Content Include="Assets\LockScreenLogo.scale-200.png" />
     <Content Include="Assets\SplashScreen.scale-200.png" />
@@ -130,6 +131,11 @@
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
       <Version>6.0.6</Version>
     </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <SDKReference Include="WindowsIoT, Version=10.0.16299.0">
+      <Name>Windows IoT Extensions for the UWP</Name>
+    </SDKReference>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>

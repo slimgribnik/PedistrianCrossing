@@ -61,6 +61,7 @@ namespace PedistrianCrossing
         public MainPage()
         {
             this.InitializeComponent();
+            
             InitGPIO();
             this.secondsElapsed = 0;
         }
@@ -107,6 +108,9 @@ namespace PedistrianCrossing
             this.Button.DebounceTimeout = TimeSpan.FromMilliseconds(50);
             // Register for the ValueChanged event so our Button_ValueChanged
             // function is called when the button is pressed
+            buttonStatus.Text = "Not Pressed";
+            walkTimer = new DispatcherTimer();
+            walkTimer.Tick += WalkTimer_Tick;
             this.Button.ValueChanged += Button_ValueChanged;
         }
 
@@ -114,10 +118,12 @@ namespace PedistrianCrossing
 
         private void Button_ValueChanged(GpioPin sender, GpioPinValueChangedEventArgs e)
         {
+            this.Traffic_light[YELLOW].Write(GpioPinValue.High);          //////////////////
             // Pedestrian has pushed the button. Start timer for going red.
             if (e.Edge == GpioPinEdge.FallingEdge)
             {
-                // Start the timer if and only if not in a cycle
+              this.Traffic_light[YELLOW].Write(GpioPinValue.Low); ///////////////////////////
+              // Start the timer if and only if not in a cycle
                 if (this.secondsElapsed == 0)
                 {
                     // need to invoke UI updates on the UI thread because this event
