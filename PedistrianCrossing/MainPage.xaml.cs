@@ -110,6 +110,7 @@ namespace PedistrianCrossing
             // function is called when the button is pressed
             buttonStatus.Text = "Not Pressed";
             walkTimer = new DispatcherTimer();
+            walkTimer.Interval = TimeSpan.FromMilliseconds(500);
             walkTimer.Tick += WalkTimer_Tick;
             this.Button.ValueChanged += Button_ValueChanged;
         }
