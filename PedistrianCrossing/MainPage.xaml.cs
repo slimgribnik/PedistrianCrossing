@@ -108,7 +108,7 @@ namespace PedistrianCrossing
             this.Button.DebounceTimeout = TimeSpan.FromMilliseconds(50);
             // Register for the ValueChanged event so our Button_ValueChanged
             // function is called when the button is pressed
-            buttonStatus.Text = "Not Pressed";
+            buttonStatus.Text = "Do not walk";
             walkTimer = new DispatcherTimer();
             walkTimer.Interval = TimeSpan.FromMilliseconds(500);
             walkTimer.Tick += WalkTimer_Tick;
@@ -145,6 +145,7 @@ namespace PedistrianCrossing
             // Change green to yellow
             if (this.secondsElapsed == GREEN_TO_YELLOW)
             {
+                buttonStatus.Text = "Button pressed!";
                 this.Traffic_light[GREEN].Write(GpioPinValue.Low);
                 this.Traffic_light[YELLOW].Write(GpioPinValue.High);
             }
@@ -155,6 +156,7 @@ namespace PedistrianCrossing
             }
             else if (this.secondsElapsed == WALK_ON)
             {
+                buttonStatus.Text = "Start walking";
                 this.Walk_light[RED].Write(GpioPinValue.Low);
                 this.Walk_light[YELLOW].Write(GpioPinValue.High);
             }
@@ -162,6 +164,7 @@ namespace PedistrianCrossing
 
                      (this.secondsElapsed < WALK_OFF))
             {
+                buttonStatus.Text = "Hurry Up!";
                 // Blink the walk warning light
                 if ((secondsElapsed % 2) == 0)
                 {
@@ -174,6 +177,7 @@ namespace PedistrianCrossing
             }
             else if (this.secondsElapsed == WALK_OFF)
             {
+                buttonStatus.Text = "Do not walk";
                 this.Walk_light[YELLOW].Write(GpioPinValue.Low);
                 this.Walk_light[RED].Write(GpioPinValue.High);
                 this.Traffic_light[RED].Write(GpioPinValue.Low);
