@@ -37,13 +37,18 @@ namespace PedistrianCrossing
         private int[] WALK_PINS = { 20, 21 };
 
         // State constants
-        private const int GREEN_TO_YELLOW = 4;
-        private const int YELLOW_TO_RED = 8;
-        private const int WALK_ON = 12;
-        private const int WALK_WARNING = 22;
-        private const int WALK_OFF = 30;
+        ////private const int GREEN_TO_YELLOW = 4;
+        ////private const int YELLOW_TO_RED = 8;
+        ////private const int WALK_ON = 12;
+        ////private const int WALK_WARNING = 22;
+        ////private const int WALK_OFF = 30;
+        private const int WALK_ON = 2;
+        private const int WALK_WARNING = 18;
+        private const int GREEN_TO_YELLOW = 26;
+        private const int YELLOW_TO_RED = 30;
+        //private const int WALK_OFF = GREEN_TO_YELLOW;
 
-        // Traffic light pin variables
+       // Traffic light pin variables
         private GpioPin[] Traffic_light = new GpioPin[3];
 
         // Walk light pin variables
@@ -58,16 +63,34 @@ namespace PedistrianCrossing
         // Variable for counting seconds elapsed
         private int secondsElapsed = 0;
 
+        // On screen display
+        private SolidColorBrush redBrush = new SolidColorBrush(Windows.UI.Colors.Red);
+        private SolidColorBrush greenBrush = new SolidColorBrush(Windows.UI.Colors.Green);
+        private SolidColorBrush yellowBrush = new SolidColorBrush(Windows.UI.Colors.Yellow);
+        private SolidColorBrush grayBrush = new SolidColorBrush(Windows.UI.Colors.LightGray);
+
         public MainPage()
         {
             this.InitializeComponent();
             
             InitGPIO();
+            InitDisplay();
+
             this.secondsElapsed = 0;
         }
 
-        // Setup the GPIO initial states
+        // Setup the display
+        private void InitDisplay()
+        {
+            WalkStatus.Text = "Do not walk";
+            LED_T_RED.Fill = redBrush;
+            LED_T_YELLOW.Fill = grayBrush;
+            LED_T_GREEN.Fill = grayBrush;
+            LED_W_RED.Fill = redBrush;
+            LED_W_YELLOW.Fill = grayBrush;
+        }
 
+        // Setup the GPIO initial states
         private void InitGPIO()
         {
             var gpio = GpioController.GetDefault();
@@ -93,9 +116,9 @@ namespace PedistrianCrossing
                 this.Walk_light[i].SetDriveMode(GpioPinDriveMode.Output);
             }
 
-            this.Traffic_light[RED].Write(GpioPinValue.Low);
+            this.Traffic_light[RED].Write(GpioPinValue.High);
             this.Traffic_light[YELLOW].Write(GpioPinValue.Low);
-            this.Traffic_light[GREEN].Write(GpioPinValue.High);
+            this.Traffic_light[GREEN].Write(GpioPinValue.Low);
             this.Walk_light[RED].Write(GpioPinValue.High);
             this.Walk_light[YELLOW].Write(GpioPinValue.Low);
 
@@ -108,15 +131,13 @@ namespace PedistrianCrossing
             this.Button.DebounceTimeout = TimeSpan.FromMilliseconds(50);
             // Register for the ValueChanged event so our Button_ValueChanged
             // function is called when the button is pressed
-            buttonStatus.Text = "Do not walk";
             walkTimer = new DispatcherTimer();
-            walkTimer.Interval = TimeSpan.FromMilliseconds(500);
+            walkTimer.Interval = TimeSpan.FromMilliseconds(1000);
             walkTimer.Tick += WalkTimer_Tick;
             this.Button.ValueChanged += Button_ValueChanged;
         }
 
         // Detect button press event
-
         private void Button_ValueChanged(GpioPin sender, GpioPinValueChangedEventArgs e)
         {
             // Pedestrian has pushed the button. Start timer for going red.
@@ -142,46 +163,58 @@ namespace PedistrianCrossing
         private void WalkTimer_Tick(object sender, object e)
 
         {
-            // Change green to yellow
-            if (this.secondsElapsed == GREEN_TO_YELLOW)
+            if(secondsElapsed == 0)
             {
-                buttonStatus.Text = "Button pressed!";
-                this.Traffic_light[GREEN].Write(GpioPinValue.Low);
-                this.Traffic_light[YELLOW].Write(GpioPinValue.High);
+               this.WalkStatus.Text = "Start Walking!";
+               this.LED_T_GREEN.Fill = greenBrush;
+               this.LED_T_RED.Fill = grayBrush;
+               this.LED_W_RED.Fill = grayBrush;
+               this.LED_W_YELLOW.Fill = yellowBrush;
+               this.Traffic_light[GREEN].Write(GpioPinValue.High);
+               this.Traffic_light[RED].Write(GpioPinValue.Low);
+               this.Walk_light[YELLOW].Write(GpioPinValue.High);
+               this.Walk_light[RED].Write(GpioPinValue.Low);
             }
-            else if (this.secondsElapsed == YELLOW_TO_RED)
-            {
-                this.Traffic_light[YELLOW].Write(GpioPinValue.Low);
-                this.Traffic_light[RED].Write(GpioPinValue.High);
-            }
-            else if (this.secondsElapsed == WALK_ON)
-            {
-                buttonStatus.Text = "Start walking";
-                this.Walk_light[RED].Write(GpioPinValue.Low);
-                this.Walk_light[YELLOW].Write(GpioPinValue.High);
-            }
-            else if ((this.secondsElapsed >= WALK_WARNING) &&
 
-                     (this.secondsElapsed < WALK_OFF))
+            if ((secondsElapsed >= WALK_WARNING) && (this.secondsElapsed <= GREEN_TO_YELLOW))
             {
-                buttonStatus.Text = "Hurry Up!";
+                WalkStatus.Text = "Hurry Up! " + (GREEN_TO_YELLOW - secondsElapsed).ToString();
                 // Blink the walk warning light
                 if ((secondsElapsed % 2) == 0)
                 {
-                    this.Walk_light[YELLOW].Write(GpioPinValue.Low);
+                   this.LED_W_YELLOW.Fill = grayBrush;
+                   this.Walk_light[YELLOW].Write(GpioPinValue.Low);
                 }
                 else
                 {
+                    this.LED_W_YELLOW.Fill = yellowBrush;
                     this.Walk_light[YELLOW].Write(GpioPinValue.High);
                 }
             }
-            else if (this.secondsElapsed == WALK_OFF)
+
+            // Change green to yellow
+            if (this.secondsElapsed == GREEN_TO_YELLOW)
             {
-                buttonStatus.Text = "Do not walk";
+                WalkStatus.Text = "Do not walk";
+                this.LED_T_GREEN.Fill = grayBrush;
+                this.LED_T_YELLOW.Fill = yellowBrush;
+                this.LED_W_YELLOW.Fill = grayBrush;
+                this.LED_W_RED.Fill = redBrush;
+
+                this.Traffic_light[GREEN].Write(GpioPinValue.Low);
+                this.Traffic_light[YELLOW].Write(GpioPinValue.High);
                 this.Walk_light[YELLOW].Write(GpioPinValue.Low);
                 this.Walk_light[RED].Write(GpioPinValue.High);
-                this.Traffic_light[RED].Write(GpioPinValue.Low);
-                this.Traffic_light[GREEN].Write(GpioPinValue.High);
+            }
+
+
+
+            if (this.secondsElapsed == YELLOW_TO_RED)
+            {
+                this.LED_T_YELLOW.Fill = grayBrush;
+                this.LED_T_RED.Fill = redBrush;
+                this.Traffic_light[YELLOW].Write(GpioPinValue.Low);
+                this.Traffic_light[RED].Write(GpioPinValue.High);
                 this.secondsElapsed = 0;
                 this.walkTimer.Stop();
                 return;

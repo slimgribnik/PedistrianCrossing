@@ -12,7 +12,13 @@
             <TextBlock x:Name="title" Height="60" TextWrapping="NoWrap" Text="Pedistrian Crossing" FontSize="28" Foreground="Blue"
                      Margin="10" HorizontalAlignment="Center"/>
 
-            <TextBlock x:Name="buttonStatus" Height="60" TextWrapping="NoWrap"
+            <Ellipse x:Name="LED_T_RED" Fill="Red" Stroke="White" Width="50" Height="50" Margin="10"/>
+            <Ellipse x:Name="LED_T_YELLOW" Fill="Yellow" Stroke="White" Width="50" Height="50" Margin="10"/>
+            <Ellipse x:Name="LED_T_GREEN" Fill="Green" Stroke="White" Width="50" Height="50" Margin="10"/>
+            <Rectangle x:Name="LED_W_RED" Fill="Red" Stroke="White" Width="50" Height="50" Margin="10"/>
+            <Rectangle x:Name="LED_W_YELLOW" Fill="Yellow" Stroke="White" Width="50" Height="50" Margin="10"/>
+
+            <TextBlock x:Name="WalkStatus" Height="60" TextWrapping="NoWrap"
                      Text="Status" FontSize="28" Foreground="Blue"
                      Margin="10" HorizontalAlignment="Center"/>
         </StackPanel>
