@@ -7,13 +7,13 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
-    <RelativePanel Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" Margin="324,0,220,300" RequestedTheme="Dark">
-        <Border BorderBrush="#FFEAB3B3" HorizontalAlignment="Left" Height="205" Margin="350,107,0,0" VerticalAlignment="Top" Width="81" BorderThickness="3,3,3,3"/>
+    <RelativePanel Background="#FFB8B1B1" Margin="40,30,44,28" RequestedTheme="Light">
+        <Border BorderBrush="#FFEAB3B3" HorizontalAlignment="Left" Height="240" Margin="390,80,-369,-95" VerticalAlignment="Top" Width="80" BorderThickness="3,3,3,3"/>
         <TextBlock x:Name="title" Height="60" TextWrapping="NoWrap" Text="Pedistrian Crossing" FontSize="28" Foreground="Blue"
-                     Margin="334,33,-314,-13" HorizontalAlignment="Center"/>
-        <Ellipse x:Name="LED_T_RED" Fill="Red" Stroke="White" Width="40" Height="50" Margin="370,122,-350,-102"/>
-        <Ellipse x:Name="LED_T_YELLOW" Fill="Yellow" Stroke="White" Width="40" Height="50" Margin="370,184,-350,-164"/>
-        <Ellipse x:Name="LED_T_GREEN" Fill="Green" Stroke="White" Width="40" Height="50" Margin="370,250,-350,-230"/>
+                     Margin="325,30,-316,-10" HorizontalAlignment="Center"/>
+        <Ellipse x:Name="LED_T_RED" Fill="Red" Stroke="White" Width="40" Height="50" Margin="410,95,-390,-75"/>
+        <Ellipse x:Name="LED_T_YELLOW" Fill="Yellow" Stroke="White" Width="40" Height="50" Margin="410,165,-390,-145"/>
+        <Ellipse x:Name="LED_T_GREEN" Fill="Green" Stroke="White" Width="40" Height="50" Margin="410,235,-390,-215"/>
 
         <Button x:Name="btnStartStop" Content="Start" Width="75" ClickMode="Press"
                      Click="btnStartStop_Click"  Height="50" FontSize="24"

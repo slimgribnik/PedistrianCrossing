@@ -27,6 +27,8 @@ namespace PedistrianCrossing
     /// </summary>
     public sealed partial class MainPage : Page
     {
+        bool IsGPIO = true;
+
         // Light constants
         private const int RED = 0;
         private const int YELLOW = 1;
@@ -112,6 +114,7 @@ namespace PedistrianCrossing
 
             if (gpio == null)
             {
+                IsGPIO = false;
                 return;
             }
 
@@ -186,10 +189,13 @@ namespace PedistrianCrossing
                this.LED_T_RED.Fill = grayBrush;
                this.LED_W_RED.Fill = grayBrush;
                this.LED_W_YELLOW.Fill = yellowBrush;
-               this.Traffic_light[GREEN].Write(GpioPinValue.High);
-               this.Traffic_light[RED].Write(GpioPinValue.Low);
-               this.Walk_light[YELLOW].Write(GpioPinValue.High);
-               this.Walk_light[RED].Write(GpioPinValue.Low);
+                if (IsGPIO)
+                {
+                   this.Traffic_light[GREEN].Write(GpioPinValue.High);
+                   this.Traffic_light[RED].Write(GpioPinValue.Low);
+                   this.Walk_light[YELLOW].Write(GpioPinValue.High);
+                   this.Walk_light[RED].Write(GpioPinValue.Low);
+                }
             }
 
             if ((secondsElapsed >= WALK_WARNING) && (this.secondsElapsed <= GREEN_TO_YELLOW))
@@ -200,11 +206,13 @@ namespace PedistrianCrossing
                 if ((secondsElapsed % 2) == 0)
                 {
                    this.LED_W_YELLOW.Fill = grayBrush;
-                   this.Walk_light[YELLOW].Write(GpioPinValue.Low);
+                   if (IsGPIO)
+                       this.Walk_light[YELLOW].Write(GpioPinValue.Low);
                 }
                 else
                 {
                     this.LED_W_YELLOW.Fill = yellowBrush;
+                   if (IsGPIO)
                     this.Walk_light[YELLOW].Write(GpioPinValue.High);
                 }
             }
@@ -219,10 +227,13 @@ namespace PedistrianCrossing
                 this.LED_W_YELLOW.Fill = grayBrush;
                 this.LED_W_RED.Fill = redBrush;
 
-                this.Traffic_light[GREEN].Write(GpioPinValue.Low);
-                this.Traffic_light[YELLOW].Write(GpioPinValue.High);
-                this.Walk_light[YELLOW].Write(GpioPinValue.Low);
-                this.Walk_light[RED].Write(GpioPinValue.High);
+                if (IsGPIO)
+                {
+                    this.Traffic_light[GREEN].Write(GpioPinValue.Low);
+                    this.Traffic_light[YELLOW].Write(GpioPinValue.High);
+                    this.Walk_light[YELLOW].Write(GpioPinValue.Low);
+                    this.Walk_light[RED].Write(GpioPinValue.High);
+                }
             }
 
 
@@ -231,8 +242,11 @@ namespace PedistrianCrossing
             {
                 this.LED_T_YELLOW.Fill = grayBrush;
                 this.LED_T_RED.Fill = redBrush;
+                if (IsGPIO)
+                {
                 this.Traffic_light[YELLOW].Write(GpioPinValue.Low);
                 this.Traffic_light[RED].Write(GpioPinValue.High);
+                }
                 this.secondsElapsed = 0;
                 this.walkTimer.Stop();
                 return;
@@ -265,7 +279,11 @@ namespace PedistrianCrossing
 
         private void btnStartStop_Click(object sender, RoutedEventArgs e)
         {
-            this.walkTimer.Start();
+            walkTimer = new DispatcherTimer();
+            walkTimer.Interval = TimeSpan.FromMilliseconds(1000);
+            walkTimer.Tick += WalkTimer_Tick;
+
+            walkTimer.Start();
         }
     }
 }
