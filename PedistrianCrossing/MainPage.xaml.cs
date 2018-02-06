@@ -14,6 +14,9 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using Windows.Devices.Gpio;    // GPIO header
 using Windows.UI.Core;         // DispatcherTime
+using Windows.Media.SpeechSynthesis;
+using System.Diagnostics;
+
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -69,12 +72,23 @@ namespace PedistrianCrossing
         private SolidColorBrush yellowBrush = new SolidColorBrush(Windows.UI.Colors.Yellow);
         private SolidColorBrush grayBrush = new SolidColorBrush(Windows.UI.Colors.LightGray);
 
+        // Some strings to let us know the current state.
+        const string WALK_OFF_STR = "Do not walk";
+        const string WALK_ON_STR = "Start walking";
+        const string WALK_WARNING_STR = "Hurry up";
+
+        // The Windows Speech API interface
+        private SpeechSynthesizer synthesizer;
+
         public MainPage()
         {
             this.InitializeComponent();
             
             InitGPIO();
             InitDisplay();
+
+            // Create a new SpeechSynthesizer instance for later use.
+            synthesizer = new SpeechSynthesizer();
 
             this.secondsElapsed = 0;
         }
@@ -160,12 +174,14 @@ namespace PedistrianCrossing
         }
 
         // Here you do the lights state change if and only if elapsed_seconds > 0
-        private void WalkTimer_Tick(object sender, object e)
+        private async void WalkTimer_Tick(object sender, object e)
 
         {
             if(secondsElapsed == 0)
             {
-               this.WalkStatus.Text = "Start Walking!";
+               this.WalkStatus.Text = WALK_ON_STR;
+               // Use another method to wrap the speech synthesis functionality.
+               await TextToSpeech(WALK_ON_STR);
                this.LED_T_GREEN.Fill = greenBrush;
                this.LED_T_RED.Fill = grayBrush;
                this.LED_W_RED.Fill = grayBrush;
@@ -178,7 +194,8 @@ namespace PedistrianCrossing
 
             if ((secondsElapsed >= WALK_WARNING) && (this.secondsElapsed <= GREEN_TO_YELLOW))
             {
-                WalkStatus.Text = "Hurry Up! " + (GREEN_TO_YELLOW - secondsElapsed).ToString();
+                WalkStatus.Text = WALK_WARNING_STR + " : " + (GREEN_TO_YELLOW - secondsElapsed).ToString();
+                await TextToSpeech(WALK_WARNING_STR);
                 // Blink the walk warning light
                 if ((secondsElapsed % 2) == 0)
                 {
@@ -195,7 +212,8 @@ namespace PedistrianCrossing
             // Change green to yellow
             if (this.secondsElapsed == GREEN_TO_YELLOW)
             {
-                WalkStatus.Text = "Do not walk";
+                WalkStatus.Text = WALK_OFF_STR;
+                await TextToSpeech(WALK_OFF_STR);
                 this.LED_T_GREEN.Fill = grayBrush;
                 this.LED_T_YELLOW.Fill = yellowBrush;
                 this.LED_W_YELLOW.Fill = grayBrush;
@@ -223,5 +241,27 @@ namespace PedistrianCrossing
             // increment the counter
             this.secondsElapsed += 1;
         }
+
+        private async System.Threading.Tasks.Task TextToSpeech(String textToSpeak)
+        {
+            // Because we are running somewhere other than the UI thread and we need to talk to a UI element (the media control)
+            // we need to use the dispatcher to move the calls to the right thread.
+            await Dispatcher.RunAsync(
+                Windows.UI.Core.CoreDispatcherPriority.High,
+                async () =>
+                {
+                    SpeechSynthesisStream synthesisStream;
+
+                    //creating a stream from the text which can be played using media element. This API converts text input into a stream.
+                    synthesisStream = await synthesizer.SynthesizeTextToStreamAsync(textToSpeak);
+
+                    // start this audio stream playing
+                    media.AutoPlay = true;
+                    media.SetSource(synthesisStream, synthesisStream.ContentType);
+                    media.Play();
+                }
+            );
+        }
+
     }
 }

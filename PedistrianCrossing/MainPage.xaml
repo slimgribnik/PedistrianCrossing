@@ -22,5 +22,9 @@
                      Text="Status" FontSize="28" Foreground="Blue"
                      Margin="10" HorizontalAlignment="Center"/>
         </StackPanel>
+
+        <!--This will be used for the text to speech output-->
+        <MediaElement x:Name="media" AutoPlay="False" />
+
     </Grid>
 </Page>
