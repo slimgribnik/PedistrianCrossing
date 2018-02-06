@@ -195,7 +195,7 @@ namespace PedistrianCrossing
             if ((secondsElapsed >= WALK_WARNING) && (this.secondsElapsed <= GREEN_TO_YELLOW))
             {
                 WalkStatus.Text = WALK_WARNING_STR + " : " + (GREEN_TO_YELLOW - secondsElapsed).ToString();
-                await TextToSpeech(WALK_WARNING_STR);
+                await TextToSpeech((GREEN_TO_YELLOW - secondsElapsed).ToString());
                 // Blink the walk warning light
                 if ((secondsElapsed % 2) == 0)
                 {
@@ -263,5 +263,9 @@ namespace PedistrianCrossing
             );
         }
 
+        private void btnStartStop_Click(object sender, RoutedEventArgs e)
+        {
+            this.walkTimer.Start();
+        }
     }
 }

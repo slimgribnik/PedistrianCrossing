@@ -7,24 +7,28 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
-    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-            <TextBlock x:Name="title" Height="60" TextWrapping="NoWrap" Text="Pedistrian Crossing" FontSize="28" Foreground="Blue"
-                     Margin="10" HorizontalAlignment="Center"/>
+    <RelativePanel Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" Margin="324,0,220,300" RequestedTheme="Dark">
+        <Border BorderBrush="#FFEAB3B3" HorizontalAlignment="Left" Height="205" Margin="350,107,0,0" VerticalAlignment="Top" Width="81" BorderThickness="3,3,3,3"/>
+        <TextBlock x:Name="title" Height="60" TextWrapping="NoWrap" Text="Pedistrian Crossing" FontSize="28" Foreground="Blue"
+                     Margin="334,33,-314,-13" HorizontalAlignment="Center"/>
+        <Ellipse x:Name="LED_T_RED" Fill="Red" Stroke="White" Width="40" Height="50" Margin="370,122,-350,-102"/>
+        <Ellipse x:Name="LED_T_YELLOW" Fill="Yellow" Stroke="White" Width="40" Height="50" Margin="370,184,-350,-164"/>
+        <Ellipse x:Name="LED_T_GREEN" Fill="Green" Stroke="White" Width="40" Height="50" Margin="370,250,-350,-230"/>
 
-            <Ellipse x:Name="LED_T_RED" Fill="Red" Stroke="White" Width="50" Height="50" Margin="10"/>
-            <Ellipse x:Name="LED_T_YELLOW" Fill="Yellow" Stroke="White" Width="50" Height="50" Margin="10"/>
-            <Ellipse x:Name="LED_T_GREEN" Fill="Green" Stroke="White" Width="50" Height="50" Margin="10"/>
-            <Rectangle x:Name="LED_W_RED" Fill="Red" Stroke="White" Width="50" Height="50" Margin="10"/>
-            <Rectangle x:Name="LED_W_YELLOW" Fill="Yellow" Stroke="White" Width="50" Height="50" Margin="10"/>
+        <Button x:Name="btnStartStop" Content="Start" Width="75" ClickMode="Press"
+                     Click="btnStartStop_Click"  Height="50" FontSize="24"
+                     Margin="427,414,-407,-394" HorizontalAlignment="Center"/>
 
-            <TextBlock x:Name="WalkStatus" Height="60" TextWrapping="NoWrap"
+
+        <Rectangle x:Name="LED_W_RED" Fill="Red" Stroke="White" Width="50" Height="50" Margin="362,386,-342,-366"/>
+        <Rectangle x:Name="LED_W_YELLOW" Fill="Yellow" Stroke="White" Width="50" Height="50" Margin="361,445,-341,-425"/>
+
+        <TextBlock x:Name="WalkStatus" Height="60" TextWrapping="NoWrap"
                      Text="Status" FontSize="28" Foreground="Blue"
-                     Margin="10" HorizontalAlignment="Center"/>
-        </StackPanel>
+                     Margin="353,321,-333,-301" HorizontalAlignment="Center"/>
 
         <!--This will be used for the text to speech output-->
         <MediaElement x:Name="media" AutoPlay="False" />
 
-    </Grid>
+    </RelativePanel>
 </Page>
